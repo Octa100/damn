@@ -1,0 +1,25 @@
+# Develop a programme for deep search implementation to detect plagiarism in documents online.
+
+import requests
+from bs4 import BeautifulSoup
+import spacy
+# python -m spacy download en_core_web_md
+nlp = spacy.load("en_core_web_md")
+
+def get_online_text(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    return soup.get_text()
+def check_plagiarism(original_text, online_text):
+    doc1 = nlp(original_text)
+    doc2 = nlp(online_text)
+    similarity = doc1.similarity(doc2)
+    return similarity
+
+#original_text = "Plagiarism refers to the act of using someone else's work, such as words, ideas, or inventions, without giving proper credit or acknowledgment."
+#original_text = "Plagiarism can also include re-using your own work without citation."
+original_text = "Plag POIUYtrewqasddf"
+online_text = get_online_text("https://www.sciencedirect.com/topics/social-sciences/plagiarism")
+similarity_score = check_plagiarism(original_text, online_text)
+
+print(f"Plagiarism Similarity Score: {similarity_score:.2f}")
