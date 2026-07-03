@@ -6,35 +6,42 @@ from nltk.sentiment import SentimentIntensityAnalyzer
 from wordcloud import WordCloud
 import nltk
 
-nltk.download('vader_lexicon')
-sia=SentimentIntensityAnalyzer()
-data=pd.DataFrame({
-    "review":[
-        "The product is amazing! I love it.",
-        "The product meets expectations and performs as described.",
-        "Terrible quality, I'm disappointed."
-    ]})
+nltk.download("vader_lexicon")
 
-def get_sentiment(review):
-    score=sia.polarity_scores(review)
-    if score['compound']>0.05:
+sia = SentimentIntensityAnalyzer()
+
+reviews = [
+    "The product is amazing! I love it.",
+    "The product meets expectations and performs as described.",
+    "Terrible quality, I'm disappointed."
+]
+
+df = pd.DataFrame({"Review": reviews})
+
+def sentiment(review):
+    score = sia.polarity_scores(review)["compound"]
+
+    if score >= 0.05:
         return "Positive"
-    elif score['compound']<-0.05:
+    elif score <= -0.05:
         return "Negative"
     else:
         return "Neutral"
 
-data["sentiment"]=data["review"].apply(get_sentiment)
-print(data)
+df["Sentiment"] = df["Review"].apply(sentiment)
 
-data["sentiment"].value_counts().plot(kind="bar", color=["green", "gray", "red"])
+print(df)
+
+df["Sentiment"].value_counts().plot(kind="bar",
+                                    color=["green","gray","red"])
+plt.title("Customer Sentiment Analysis")
 plt.xlabel("Sentiment")
 plt.ylabel("Count")
-plt.title("Customer Sentiment Analysis")
 plt.show()
 
-text = " ".join(review for review in data["review"])
+text = " ".join(df["Review"])
 wordcloud = WordCloud(background_color="white").generate(text)
-plt.imshow(wordcloud, interpolation="bilinear")
+
+plt.imshow(wordcloud)
 plt.axis("off")
 plt.show()
