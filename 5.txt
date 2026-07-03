@@ -1,0 +1,43 @@
+# Demonstrate Text Mining and Webpage Pre-processing using meta information from the web pages (Local/Online).
+
+from bs4 import BeautifulSoup
+import requests
+import re
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+import nltk
+from collections import Counter
+
+# Fetch the webpage
+url = "https://www.geeksforgeeks.org/text-mining-in-data-mining/ "
+response = requests.get(url)
+soup = BeautifulSoup(response.text, "html.parser")
+
+# Extract meta information
+t = soup.title.string
+d = soup.find("meta", attrs={"name": "description"})
+k = soup.find("meta", attrs={"name": "keywords"})
+
+print(" Title:", t)
+print("\n Description:", d["content"] if d else "Not found")
+print("\n Keywords:", k["content"] if k else "Not found")
+
+# Download NLTK data
+nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download('punkt_tab')
+
+# Extract raw text
+raw_text = soup.get_text()
+
+# Cleaning steps
+text = re.sub(r'\s+', ' ', raw_text)  # Remove extra spaces
+text = re.sub(r'[^a-zA-Z]', ' ', text)  # Keep only letters
+tokens = word_tokenize(text.lower())  # Tokenization & lowercasing
+filtered_tokens = [word for word in tokens if word not in stopwords.words("english")]
+print("\n Processed Text:", filtered_tokens[:50])
+
+# Analyze keyword frequency
+keyword_list = k["content"].split(",") if k else []
+word_counts = Counter(keyword_list)
+print("\n Keyword Frequency:", word_counts)
