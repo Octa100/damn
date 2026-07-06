@@ -1,23 +1,15 @@
-# Apriori Algorithm implementation in case study.
+# Implement dependency parsing of a given text
 
-import pandas as pd
-from mlxtend.frequent_patterns import apriori
-from mlxtend.frequent_patterns import association_rules
+import spacy
+nlp = spacy.load("en_core_web_sm")
 
-data = {
-    'Transaction': [1, 2, 3, 4, 5],
-    'Milk': [1, 0, 1, 1, 0],
-    'Bread': [1, 1, 1, 0, 1],
-    'Butter': [0, 1, 0, 1, 1],
-    'Eggs': [1, 0, 1, 0, 1]
-}
+text = "Reliance Retail acquires majority stake in designer brand Abraham & Thakore."
+doc = nlp(text)
+for token in doc:
+  print(token.text,'=>',token.dep_)
+from spacy import displacy
+displacy.render(doc, jupyter=True)
 
-df = pd.DataFrame(data)
-df.set_index('Transaction', inplace=True)
+from spacy import displacy
 
-df = df.astype(bool)
-frequent_itemsets = apriori(df, min_support=0.6, use_colnames=True)
-print(frequent_itemsets)
-
-rules = association_rules(frequent_itemsets, metric="lift", min_threshold=1)
-print(rules)
+displacy.render(doc, jupyter=True)
