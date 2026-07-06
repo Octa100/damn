@@ -1,17 +1,16 @@
-Develop a basic crawler for the web search for user defined keywords.
+# Implement Named Entity Recognition (NER)
 
-import requests
-from bs4 import BeautifulSoup
+import nltk
+nltk.download('averaged_perceptron_tagger')
+nltk.download('maxent_ne_chunker')
+nltk.download('words')
+nltk.download('punkt')
 
-key = input("Enter Keyword: ")
-url = "https://www.bing.com/search?q=" + key
+from nltk import ne_chunk
 
-page = requests.get(url)
+m = "The US President stays in white house"
+nt=nltk.word_tokenize(m)
+ntg=nltk.pos_tag(nt)
+nr=ne_chunk(ntg)
 
-if page.status_code == 200:
-    soup = BeautifulSoup(page.text, "html.parser")
-    for i in soup.select("li.b_algo h2 a"):
-        print(i.text)
-        print(i["href"])
-else:
-    print("Failed to fetch webpage")
+print(nr)
