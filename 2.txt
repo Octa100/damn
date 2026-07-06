@@ -1,20 +1,21 @@
-# Scrape an online Social Media Site for Data. Use python to scrape information from twitter.
+# Implement stemming and lemmatization
 
-from playwright.sync_api import sync_playwright
+import nltk
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+from nltk.tokenize import word_tokenize
 
-with sync_playwright() as pw:
-    browser = pw.chromium.launch(headless=False)
+nltk.download('punkt')
+nltk.download('wordnet')
 
-    context = browser.new_context(
-        viewport={"width": 1920, "height": 1080}
-    )
+ps = PorterStemmer()
+for w in ["programs","programer","programing","programmers"]:
+    print(w, ":", ps.stem(w))
 
-    page = context.new_page()
-    page.goto("https://www.reddit.com/")
-    page.locator("h1").wait_for(state="visible")
+for w in word_tokenize("programmers program with programing languages"):
+    print(w, ":", ps.stem(w))
 
-    heading = page.locator("h1").inner_text()
+lemma = WordNetLemmatizer()
+for w in ["rocks","corpora","better","best","worst"]:
+    print(w, ":", lemma.lemmatize(w))
 
-    print("Reddit Heading:", heading)
-
-    browser.close()
+print("better:", lemma.lemmatize("better", pos="a"))
