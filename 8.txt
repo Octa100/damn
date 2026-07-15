@@ -1,5 +1,7 @@
 # Implement Text Summarization for the given sample text
 
+!pip install "transformers<5"
+!pip install pipeline
 import pipeline
 from transformers import pipeline
 summarization=pipeline("summarization")
